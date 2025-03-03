@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour
 
         if (IsTouchingWall() && !isGrounded)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, -5f); // Apply slight downward force
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, -1f); // Apply slight downward force
         }
 
         if (JumpAction.WasPressedThisFrame() && jumpCount < maxJumps)
