@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private bool isGrounded;
     private int jumpCount;
-    private const int maxJumps = 2;
+    private const int maxJumps = 1;
     private bool isDashing;
     private float originalGravityScale;
     private float dashTime;
@@ -70,10 +70,9 @@ public class PlayerController : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(rb.linearVelocityX, jumpForce);
             jumpCount++;
-        }
-        if (jumpCount == 0)
+        }else if (IsGrounded())
         {
-            
+            jumpCount = 0;
             dashedSinceGrounded = false;
         }
 
@@ -85,21 +84,25 @@ public class PlayerController : MonoBehaviour
         {
             dashCooldownTimer -= Time.deltaTime;
         }
+        
+        isGrounded = IsGrounded();
+        
     }
 
     void FixedUpdate()
     {
         if (rb.linearVelocityX > 0 && !facingRight) Flip(); else if(rb.linearVelocityX < 0 && facingRight) Flip();
     }
-
-    void OnCollisionEnter2D(Collision2D collision)
+    private bool IsGrounded()
     {
-        if (Physics2D.Raycast(transform.position, Vector2.down, 1.3f, LayerMask.GetMask("Ground")))
-        {
-            jumpCount = 0;
-            dashedSinceGrounded = false;
-        }
+        float extraHeight = 0.1f;
+        Vector2 boxSize = new Vector2(1.37f, 2.4f); // Adjust the width and height of the box as needed
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position, boxSize, 0f, Vector2.down, extraHeight, LayerMask.GetMask("Ground"));
+        Color boxColor = hit.collider != null ? Color.green : Color.red;
+        Debug.DrawRay(transform.position, Vector2.down * (1.3f + extraHeight), boxColor);
+        return hit.collider != null;
     }
+
 
     private void HandleDashInput()
     {
