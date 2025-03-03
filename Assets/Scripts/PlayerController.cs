@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour
         if (!isDashing)
         {
             rb.linearVelocity = new Vector2(move.x * speed, rb.linearVelocityY);
-            if (rb.linearVelocity == Vector2.zero) ChangeState(PlayerState.Idle);  else ChangeState(PlayerState.Walk); 
+            if (rb.linearVelocityX == 0) ChangeState(PlayerState.Idle);  else ChangeState(PlayerState.Walk); 
         }
 
         if (IsTouchingWall() && !isGrounded)
@@ -164,7 +164,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    
+
     private void Flip ()
     {
         facingRight = !facingRight;
