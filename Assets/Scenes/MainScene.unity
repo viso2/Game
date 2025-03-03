@@ -356,7 +356,7 @@ GameObject:
   - component: {fileID: 648052760}
   - component: {fileID: 648052759}
   - component: {fileID: 648052761}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Square
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -690,6 +690,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerCharacter
       objectReference: {fileID: 0}
+    - target: {fileID: 3319937708375127273, guid: 6007f59c12dadcf4f894a427bda28360, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 6200000, guid: 9c878132761ed864f8e0323afa053464, type: 2}
+    - target: {fileID: 3319937708375127273, guid: 6007f59c12dadcf4f894a427bda28360, type: 3}
+      propertyPath: m_GravityScale
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3319937708375127273, guid: 6007f59c12dadcf4f894a427bda28360, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4941060054494337137, guid: 6007f59c12dadcf4f894a427bda28360, type: 3}
       propertyPath: dashSpeed
       value: 30
@@ -712,7 +724,7 @@ PrefabInstance:
       objectReference: {fileID: 519420032}
     - target: {fileID: 4941060054494337137, guid: 6007f59c12dadcf4f894a427bda28360, type: 3}
       propertyPath: cameraSmoothSpeed
-      value: 100
+      value: 999999
       objectReference: {fileID: 0}
     - target: {fileID: 4941060054494337137, guid: 6007f59c12dadcf4f894a427bda28360, type: 3}
       propertyPath: MoveAction.m_SingletonActionBindings.Array.data[1].m_Path
