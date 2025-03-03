@@ -423,7 +423,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.4202, y: -2.73, z: 0}
-  m_LocalScale: {x: 44.05288, y: 1, z: 1}
+  m_LocalScale: {x: 277.87, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -617,9 +617,33 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 5010105643796017166, guid: c627e468465f48f48878de989761545b, type: 3}
+      propertyPath: speed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5010105643796017166, guid: c627e468465f48f48878de989761545b, type: 3}
+      propertyPath: dashSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5010105643796017166, guid: c627e468465f48f48878de989761545b, type: 3}
+      propertyPath: jumpForce
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5010105643796017166, guid: c627e468465f48f48878de989761545b, type: 3}
+      propertyPath: dashCooldown
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5010105643796017166, guid: c627e468465f48f48878de989761545b, type: 3}
+      propertyPath: dashDuration
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5010105643796017166, guid: c627e468465f48f48878de989761545b, type: 3}
       propertyPath: cameraTransform
       value: 
       objectReference: {fileID: 519420032}
+    - target: {fileID: 5010105643796017166, guid: c627e468465f48f48878de989761545b, type: 3}
+      propertyPath: cameraSmoothSpeed
+      value: 9999
+      objectReference: {fileID: 0}
     - target: {fileID: 7629043114686674880, guid: c627e468465f48f48878de989761545b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.13
@@ -712,6 +736,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2953911335559487015, guid: a0b7138c203885e49a5c6dabf83fbf6e, type: 3}
+      propertyPath: maxY
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2953911335559487015, guid: a0b7138c203885e49a5c6dabf83fbf6e, type: 3}
+      propertyPath: minY
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 2953911335559487015, guid: a0b7138c203885e49a5c6dabf83fbf6e, type: 3}
       propertyPath: player
       value: 
