@@ -28,14 +28,21 @@ public class PlayerController : MonoBehaviour
     public float dashCooldown = 1f; // Cooldown time in seconds
     private float dashCooldownTimer = 0f;
 
+    //Animation
+    private Animator animator;
+    private enum PlayerState {Attack, Block, Die, Idle, Run, Walk}
+    private PlayerState currentState = PlayerState.Idle;
+
+    private bool facingRight = true;
+
     void Start()
     {
         MoveAction.Enable();
         JumpAction.Enable();
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
+        animator = GetComponent<Animator>();
     }
-
     void Update()
     {
         Vector2 move = MoveAction.ReadValue<Vector2>();
@@ -47,6 +54,7 @@ public class PlayerController : MonoBehaviour
         if (!isDashing)
         {
             rb.linearVelocity = new Vector2(move.x * speed, rb.linearVelocityY);
+            if (rb.linearVelocity == Vector2.zero) ChangeState(PlayerState.Idle);  else ChangeState(PlayerState.Walk); 
         }
 
         if (IsTouchingWall() && !isGrounded)
@@ -68,22 +76,25 @@ public class PlayerController : MonoBehaviour
             dashCooldownTimer -= Time.deltaTime;
         }
 
-        Debug.Log(IsTouchingWall());
-    }
+       // if (rb.linearVelocity == Vector2.zero) ChangeState(PlayerState.Idle);
 
+        Debug.Log(currentState);
+    }
     void LateUpdate()
     {
         FollowPlayer();
     }
-
+    void FixedUpdate()
+    {
+        if (rb.linearVelocityX > 0 && !facingRight) Flip(); else if(rb.linearVelocityX < 0 && facingRight) Flip();
+    }
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (Physics2D.Raycast(transform.position, Vector2.down, 1.1f, LayerMask.GetMask("Ground")))
+        if (Physics2D.Raycast(transform.position, Vector2.down, 1.3f, LayerMask.GetMask("Ground")))
         {
             jumpCount = 0;
         }
     }
-
     private void HandleDashInput()
     {
         if (dashCooldownTimer <= 0 && (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D)))
@@ -99,19 +110,18 @@ public class PlayerController : MonoBehaviour
             lastKeyPressed = currentKey;
         }
     }
-
     private System.Collections.IEnumerator Dash(Vector2 direction)
     {
         isDashing = true;
         dashTime = dashDuration;
         rb.linearVelocity = direction * dashSpeed;
 
+        ChangeState(PlayerState.Run);
         yield return new WaitForSeconds(dashDuration);
 
         rb.linearVelocity = Vector2.zero;
         isDashing = false;
     }
-    
     private void FollowPlayer()
 
     {
@@ -122,9 +132,43 @@ public class PlayerController : MonoBehaviour
             cameraTransform.position = Vector3.Lerp(cameraTransform.position, targetPosition, cameraSmoothSpeed * Time.deltaTime);
         }
     }
-
-    private bool IsTouchingWall() {
+    private bool IsTouchingWall() 
+    {
         return Physics2D.Raycast(transform.position, Vector2.right, 0.6f, LayerMask.GetMask("Ground")) || 
             Physics2D.Raycast(transform.position, Vector2.left, 0.6f, LayerMask.GetMask("Ground"));
     }
+    private void ChangeState(PlayerState newState) {
+        if (currentState != newState)
+        {
+            currentState = newState;
+            switch (currentState)
+            {
+                case PlayerState.Attack:
+                    animator.Play("Attack");
+                    break;
+                case PlayerState.Block:
+                    animator.Play("Block");
+                    break;
+                case PlayerState.Die:
+                    animator.Play("Die");
+                    break;
+                case PlayerState.Idle:
+                    animator.Play("Idle");
+                    break;
+                case PlayerState.Run:
+                    animator.Play("Run");
+                    break;
+                case PlayerState.Walk:
+                    animator.Play("Walk");
+                    break;
+            }
+        }
+    }
+    private void Flip ()
+    {
+        facingRight = !facingRight;
+        Vector3 theScale = transform.localScale;
+        theScale.x *= -1;
+        transform.localScale = theScale;
+    } 
 }
