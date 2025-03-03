@@ -6,7 +6,7 @@ public class PlatformGenerator : MonoBehaviour
     public GameObject platformPrefab; // Assign a platform prefab in Unity
     public Transform player;
     public float minY = -2f, maxY = 2f;
-    public float platformSpacing = 10f;
+    public float platformSpacing = 20f;
     public int initialPlatforms = 5;
     private float lastSpawnX;
 
