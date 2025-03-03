@@ -631,11 +631,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollSpeeds:
-  - 1
-  - 2
-  - 3
-  - 4
   - 5
+  - 10
+  - 15
+  - 20
+  - 25
 --- !u!4 &1107310160
 Transform:
   m_ObjectHideFlags: 0
