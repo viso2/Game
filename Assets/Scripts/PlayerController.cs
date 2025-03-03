@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
         rb.freezeRotation = true;
         animator = GetComponent<Animator>();
     }
+
     void Update()
     {
         Vector2 move = MoveAction.ReadValue<Vector2>();
@@ -77,10 +78,12 @@ public class PlayerController : MonoBehaviour
             dashCooldownTimer -= Time.deltaTime;
         }
     }
+
     void FixedUpdate()
     {
         if (rb.linearVelocityX > 0 && !facingRight) Flip(); else if(rb.linearVelocityX < 0 && facingRight) Flip();
     }
+
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (Physics2D.Raycast(transform.position, Vector2.down, 1.3f, LayerMask.GetMask("Ground")))
@@ -88,6 +91,7 @@ public class PlayerController : MonoBehaviour
             jumpCount = 0;
         }
     }
+
     private void HandleDashInput()
     {
         if (dashCooldownTimer <= 0 && (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D)))
@@ -103,6 +107,7 @@ public class PlayerController : MonoBehaviour
             lastKeyPressed = currentKey;
         }
     }
+
     private System.Collections.IEnumerator Dash(Vector2 direction)
     {
         isDashing = true;
@@ -115,8 +120,8 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         isDashing = false;
     }
-    private void FollowPlayer()
 
+    private void FollowPlayer()
     {
         if (cameraTransform != null)
         {
@@ -125,11 +130,13 @@ public class PlayerController : MonoBehaviour
             cameraTransform.position = Vector3.Lerp(cameraTransform.position, targetPosition, cameraSmoothSpeed * Time.deltaTime);
         }
     }
+
     private bool IsTouchingWall() 
     {
         return Physics2D.Raycast(transform.position, Vector2.right, 0.6f, LayerMask.GetMask("Ground")) || 
             Physics2D.Raycast(transform.position, Vector2.left, 0.6f, LayerMask.GetMask("Ground"));
     }
+
     private void ChangeState(PlayerState newState) {
         if (currentState != newState)
         {
@@ -157,6 +164,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+    
     private void Flip ()
     {
         facingRight = !facingRight;
