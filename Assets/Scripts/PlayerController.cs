@@ -69,20 +69,13 @@ public class PlayerController : MonoBehaviour
         }
 
         HandleDashInput();
+        FollowPlayer();
 
         // Update the dash cooldown timer
         if (dashCooldownTimer > 0)
         {
             dashCooldownTimer -= Time.deltaTime;
         }
-
-       // if (rb.linearVelocity == Vector2.zero) ChangeState(PlayerState.Idle);
-
-        Debug.Log(currentState);
-    }
-    void LateUpdate()
-    {
-        FollowPlayer();
     }
     void FixedUpdate()
     {
