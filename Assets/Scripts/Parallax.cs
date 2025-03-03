@@ -7,10 +7,21 @@ public class Parallax : MonoBehaviour
     public float baseSpeed = 1f;
 
     private Vector3 lastCameraPosition;
+    private float[] layerWidths;
 
     void Start()
     {
         lastCameraPosition = Camera.main.transform.position;
+        layerWidths = new float[backgroundLayers.Length];
+
+        for (int i = 0; i < backgroundLayers.Length; i++)
+        {
+            SpriteRenderer spriteRenderer = backgroundLayers[i].GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null)
+            {
+                layerWidths[i] = spriteRenderer.bounds.size.x;
+            }
+        }
     }
 
     void Update()
@@ -21,6 +32,23 @@ public class Parallax : MonoBehaviour
         {
             float parallaxEffect = speedMultipliers[i] * baseSpeed;
             backgroundLayers[i].position += new Vector3(cameraMovement.x * parallaxEffect, 0, 0);
+
+            // Check if the background layer has exited the screen to the right
+            if (Camera.main.transform.position.x - backgroundLayers[i].position.x >= layerWidths[i])
+            {
+                // Reposition the background layer to the end of the sequence
+                Vector3 newPosition = backgroundLayers[i].position;
+                newPosition.x += layerWidths[i] * backgroundLayers.Length;
+                backgroundLayers[i].position = newPosition;
+            }
+            // Check if the background layer has exited the screen to the left
+            else if (Camera.main.transform.position.x - backgroundLayers[i].position.x <= -layerWidths[i])
+            {
+                // Reposition the background layer to the start of the sequence
+                Vector3 newPosition = backgroundLayers[i].position;
+                newPosition.x -= layerWidths[i] * backgroundLayers.Length;
+                backgroundLayers[i].position = newPosition;
+            }
         }
 
         lastCameraPosition = Camera.main.transform.position;
