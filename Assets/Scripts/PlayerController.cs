@@ -14,7 +14,9 @@ public class PlayerController : MonoBehaviour
     private int jumpCount;
     private const int maxJumps = 2;
     private bool isDashing;
+    private float originalGravityScale;
     private float dashTime;
+    private bool dashedSinceGrounded = false;
     private Vector2 lastMoveDirection;
 
     public Transform cameraTransform;
@@ -42,6 +44,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
         animator = GetComponent<Animator>();
+        originalGravityScale = rb.gravityScale;
     }
 
     void Update()
@@ -68,6 +71,11 @@ public class PlayerController : MonoBehaviour
             rb.linearVelocity = new Vector2(rb.linearVelocityX, jumpForce);
             jumpCount++;
         }
+        if (jumpCount == 0)
+        {
+            
+            dashedSinceGrounded = false;
+        }
 
         HandleDashInput();
         FollowPlayer();
@@ -89,12 +97,13 @@ public class PlayerController : MonoBehaviour
         if (Physics2D.Raycast(transform.position, Vector2.down, 1.3f, LayerMask.GetMask("Ground")))
         {
             jumpCount = 0;
+            dashedSinceGrounded = false;
         }
     }
 
     private void HandleDashInput()
     {
-        if (dashCooldownTimer <= 0 && (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D)))
+        if (dashCooldownTimer <= 0 && (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))&& !dashedSinceGrounded)
         {
             KeyCode currentKey = Input.GetKeyDown(KeyCode.A) ? KeyCode.A : KeyCode.D;
 
@@ -113,12 +122,15 @@ public class PlayerController : MonoBehaviour
         isDashing = true;
         dashTime = dashDuration;
         rb.linearVelocity = direction * dashSpeed;
+        rb.gravityScale = 0;
 
         ChangeState(PlayerState.Run);
         yield return new WaitForSeconds(dashDuration);
 
         rb.linearVelocity = Vector2.zero;
         isDashing = false;
+        rb.gravityScale = originalGravityScale;
+        dashedSinceGrounded = true;
     }
 
     private void FollowPlayer()
