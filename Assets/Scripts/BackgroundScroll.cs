@@ -3,7 +3,6 @@ using UnityEngine;
 public class BackgroundScroll : MonoBehaviour
 {
     public float[] scrollSpeeds;
-    public GameObject backgroundPrefab;
     private Vector2[] startPositions;
     private Transform[] backgrounds;
     private float[] backgroundWidths;
@@ -35,13 +34,24 @@ public class BackgroundScroll : MonoBehaviour
             if (backgrounds[i].position.x < -backgroundWidths[i])
             {
                 Vector2 offset = new Vector2(backgroundWidths[i] * backgrounds.Length, 0);
-                backgrounds[i].position += new Vector3(offset.x,offset.y,backgrounds[i].position.z);
+                backgrounds[i].position += new Vector3(offset.x, offset.y, backgrounds[i].position.z);
                 startPositions[i] += offset;
 
-                // Instantiate a new background when the current one goes out of view
-                GameObject newBackground = Instantiate(backgroundPrefab, backgrounds[i].position + new Vector3(backgroundWidths[i], 0, 0), Quaternion.identity);
+                // Duplicate the current background when it goes out of view
+                GameObject newBackground = Instantiate(backgrounds[i].gameObject, backgrounds[i].position + new Vector3(backgroundWidths[i]*backgrounds.Length, 0, 0), Quaternion.identity);
                 newBackground.transform.parent = transform;
                 newBackground.GetComponent<SpriteRenderer>().sortingOrder = backgrounds[i].GetComponent<SpriteRenderer>().sortingOrder;
+
+                // Add the new background to the arrays
+                System.Array.Resize(ref startPositions, startPositions.Length + 1);
+                System.Array.Resize(ref backgrounds, backgrounds.Length + 1);
+                System.Array.Resize(ref backgroundWidths, backgroundWidths.Length + 1);
+                System.Array.Resize(ref scrollSpeeds, scrollSpeeds.Length + 1);
+
+                startPositions[startPositions.Length - 1] = newBackground.transform.position;
+                backgrounds[backgrounds.Length - 1] = newBackground.transform;
+                backgroundWidths[backgroundWidths.Length - 1] = newBackground.GetComponent<SpriteRenderer>().bounds.size.x;
+                scrollSpeeds[scrollSpeeds.Length - 1] = scrollSpeeds[i]; // Inherit the scroll speed
             }
         }
     }
