@@ -33,5 +33,6 @@ public class PlatformGenerator : MonoBehaviour
         newPlatform.transform.localScale = new Vector2(randonWidth, 1);
 
         newPlatform.tag = "Ground";
+        newPlatform.layer = 3;
     }
 }

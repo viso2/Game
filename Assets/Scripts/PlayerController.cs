@@ -46,8 +46,12 @@ public class PlayerController : MonoBehaviour
 
         if (!isDashing)
         {
-            Vector2 position = (Vector2)transform.position + move * speed * Time.deltaTime;
-            transform.position = position;
+            rb.linearVelocity = new Vector2(move.x * speed, rb.linearVelocityY);
+        }
+
+        if (IsTouchingWall() && !isGrounded)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, -5f); // Apply slight downward force
         }
 
         if (JumpAction.WasPressedThisFrame() && jumpCount < maxJumps)
@@ -64,7 +68,7 @@ public class PlayerController : MonoBehaviour
             dashCooldownTimer -= Time.deltaTime;
         }
 
-        Debug.Log(dashCooldownTimer);
+        Debug.Log(IsTouchingWall());
     }
 
     void LateUpdate()
@@ -74,7 +78,7 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (Physics2D.Raycast(transform.position, Vector2.down, 1.1f, LayerMask.GetMask("Ground")))
         {
             jumpCount = 0;
         }
@@ -100,19 +104,16 @@ public class PlayerController : MonoBehaviour
     {
         isDashing = true;
         dashTime = dashDuration;
-        Vector2 dashVelocity = direction * dashSpeed;
+        rb.linearVelocity = direction * dashSpeed;
 
-        while (dashTime > 0)
-        {
-            transform.position += (Vector3)dashVelocity * Time.deltaTime;
-            dashTime -= Time.deltaTime;
-            yield return null;
-        }
+        yield return new WaitForSeconds(dashDuration);
 
+        rb.linearVelocity = Vector2.zero;
         isDashing = false;
     }
-
+    
     private void FollowPlayer()
+
     {
         if (cameraTransform != null)
         {
@@ -120,5 +121,10 @@ public class PlayerController : MonoBehaviour
             Vector3 targetPosition = new Vector3(transform.position.x, transform.position.y, cameraTransform.position.z);
             cameraTransform.position = Vector3.Lerp(cameraTransform.position, targetPosition, cameraSmoothSpeed * Time.deltaTime);
         }
+    }
+
+    private bool IsTouchingWall() {
+        return Physics2D.Raycast(transform.position, Vector2.right, 0.6f, LayerMask.GetMask("Ground")) || 
+            Physics2D.Raycast(transform.position, Vector2.left, 0.6f, LayerMask.GetMask("Ground"));
     }
 }
