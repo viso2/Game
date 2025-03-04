@@ -84,9 +84,7 @@ public class PlayerController : MonoBehaviour
         }
        
         isGrounded = IsGrounded();
-        Debug.Log("isGrounded: " + isGrounded);
-        Debug.Log("IsTouchingWall: " + IsTouchingWall());   
-        Debug.Log("Position"+ transform.position);
+      
     }
 
     void FixedUpdate()
@@ -95,14 +93,6 @@ public class PlayerController : MonoBehaviour
     }
     private bool IsGrounded()
     {
-        /*float extraHeight = 0.1f;
-        Vector2 boxSize = new Vector2(1f, 2.4f); // Adjust the width and height of the box as needed
-        RaycastHit2D hit = Physics2D.BoxCast(transform.position, boxSize, 0f, Vector2.down, extraHeight, LayerMask.GetMask("Ground"));
-         Color boxColor = hit.collider != null ? Color.green : Color.red;
-         Vector3 boxCenter = transform.position + Vector3.down * (boxSize.y / 2 + extraHeight / 2);
-        
-
-        return hit.collider != null;*/
         return boxCollider.IsTouchingLayers(LayerMask.GetMask("Ground"));
     }
 
