@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
     private PlayerState currentState = PlayerState.Idle;
 
     private bool facingRight = true;
-
+    private BoxCollider2D boxCollider;
     void Start()
     {
         MoveAction.Enable();
@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour
         rb.freezeRotation = true;
         animator = GetComponent<Animator>();
         originalGravityScale = rb.gravityScale;
+        boxCollider = GetComponent<BoxCollider2D>();
     }
 
     void Update()
@@ -60,17 +61,14 @@ public class PlayerController : MonoBehaviour
             rb.linearVelocity = new Vector2(move.x * speed, rb.linearVelocityY);
             if (rb.linearVelocityX == 0) ChangeState(PlayerState.Idle);  else ChangeState(PlayerState.Walk); 
         }
+        
 
-        if (IsTouchingWall() && !isGrounded)
-        {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, -1f); // Apply slight downward force
-        }
 
         if (JumpAction.WasPressedThisFrame() && jumpCount < maxJumps)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocityX, jumpForce);
             jumpCount++;
-        }else if (IsGrounded())
+        }else if (isGrounded && !IsTouchingWall())
         {
             jumpCount = 0;
             dashedSinceGrounded = false;
@@ -84,9 +82,11 @@ public class PlayerController : MonoBehaviour
         {
             dashCooldownTimer -= Time.deltaTime;
         }
-        
+       
         isGrounded = IsGrounded();
-        
+        Debug.Log("isGrounded: " + isGrounded);
+        Debug.Log("IsTouchingWall: " + IsTouchingWall());   
+        Debug.Log("Position"+ transform.position);
     }
 
     void FixedUpdate()
@@ -95,12 +95,15 @@ public class PlayerController : MonoBehaviour
     }
     private bool IsGrounded()
     {
-        float extraHeight = 0.1f;
-        Vector2 boxSize = new Vector2(1.37f, 2.4f); // Adjust the width and height of the box as needed
+        /*float extraHeight = 0.1f;
+        Vector2 boxSize = new Vector2(1f, 2.4f); // Adjust the width and height of the box as needed
         RaycastHit2D hit = Physics2D.BoxCast(transform.position, boxSize, 0f, Vector2.down, extraHeight, LayerMask.GetMask("Ground"));
-        Color boxColor = hit.collider != null ? Color.green : Color.red;
-        Debug.DrawRay(transform.position, Vector2.down * (1.3f + extraHeight), boxColor);
-        return hit.collider != null;
+         Color boxColor = hit.collider != null ? Color.green : Color.red;
+         Vector3 boxCenter = transform.position + Vector3.down * (boxSize.y / 2 + extraHeight / 2);
+        
+
+        return hit.collider != null;*/
+        return boxCollider.IsTouchingLayers(LayerMask.GetMask("Ground"));
     }
 
 
@@ -148,8 +151,8 @@ public class PlayerController : MonoBehaviour
 
     private bool IsTouchingWall() 
     {
-        return Physics2D.Raycast(transform.position, Vector2.right, 0.6f, LayerMask.GetMask("Ground")) || 
-            Physics2D.Raycast(transform.position, Vector2.left, 0.6f, LayerMask.GetMask("Ground"));
+        return Physics2D.Raycast(transform.position, Vector2.right, 0.7f, LayerMask.GetMask("Ground")) || 
+            Physics2D.Raycast(transform.position, Vector2.left, 0.7f, LayerMask.GetMask("Ground"));
     }
 
     private void ChangeState(PlayerState newState) {
