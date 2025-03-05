@@ -5,6 +5,8 @@ public abstract class EnemyBase : MonoBehaviour
 {
     [SerializeField] protected float speed = 2f;
     [SerializeField] protected float detectionRange = 5f;
+    [SerializeField] protected float health = 100f;
+    [SerializeField] protected float damage = 100f;
     protected Transform player;
     protected Rigidbody2D rb;
     protected bool facingRight = true;
