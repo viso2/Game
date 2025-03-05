@@ -21,7 +21,9 @@ public class PlayerController : MonoBehaviour
 
     public Transform cameraTransform;
     public float cameraSmoothSpeed = 5f;
-
+    public float attackSpeed;
+    private float attackCooldownTimer = 0f;
+    private bool isAttacking;
     private float lastDashTime;
     private float doubleTapTime = 0.2f;
     private KeyCode lastKeyPressed;
@@ -59,7 +61,7 @@ public class PlayerController : MonoBehaviour
         if (!isDashing)
         {
             rb.linearVelocity = new Vector2(move.x * speed, rb.linearVelocityY);
-            if (rb.linearVelocityX == 0) ChangeState(PlayerState.Idle);  else ChangeState(PlayerState.Walk); 
+            if (rb.linearVelocityX == 0 && !isAttacking) ChangeState(PlayerState.Idle);  else if(!isAttacking) ChangeState(PlayerState.Walk); 
         }
         
 
@@ -76,6 +78,7 @@ public class PlayerController : MonoBehaviour
 
         HandleDashInput();
         FollowPlayer();
+        Attack();
 
         // Update the dash cooldown timer
         if (dashCooldownTimer > 0)
@@ -84,7 +87,11 @@ public class PlayerController : MonoBehaviour
         }
        
         isGrounded = IsGrounded();
-      
+       if (attackCooldownTimer > 0)
+        {
+            attackCooldownTimer -= Time.deltaTime;
+        }
+        
     }
 
     void FixedUpdate()
@@ -94,6 +101,21 @@ public class PlayerController : MonoBehaviour
     private bool IsGrounded()
     {
         return boxCollider.IsTouchingLayers(LayerMask.GetMask("Ground"));
+    }
+    private void Attack()
+    {
+        if (attackCooldownTimer <= 0 && Input.GetKeyDown(KeyCode.X)){
+        isAttacking = true;
+        ChangeState(PlayerState.Attack);
+        StartCoroutine(StopAttackAfterDelay(0.5f));
+        }
+    }
+    private System.Collections.IEnumerator StopAttackAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        isAttacking = false;
+        attackCooldownTimer = attackSpeed;
+        ChangeState(PlayerState.Idle);
     }
 
 

@@ -48,10 +48,10 @@ public class BackgroundScroll : MonoBehaviour
                 System.Array.Resize(ref backgroundWidths, backgroundWidths.Length + 1);
                 System.Array.Resize(ref scrollSpeeds, scrollSpeeds.Length + 1);
 
-                startPositions[startPositions.Length - 1] = newBackground.transform.position;
-                backgrounds[backgrounds.Length - 1] = newBackground.transform;
-                backgroundWidths[backgroundWidths.Length - 1] = newBackground.GetComponent<SpriteRenderer>().bounds.size.x;
-                scrollSpeeds[scrollSpeeds.Length - 1] = scrollSpeeds[i]; // Inherit the scroll speed
+                startPositions[startPositions.Length/5 - 1] = newBackground.transform.position;
+                backgrounds[backgrounds.Length/5 - 1] = newBackground.transform;
+                backgroundWidths[backgroundWidths.Length/5 - 1] = newBackground.GetComponent<SpriteRenderer>().bounds.size.x;
+                scrollSpeeds[scrollSpeeds.Length/5 - 1] = scrollSpeeds[i]; // Inherit the scroll speed
             }
         }
     }
