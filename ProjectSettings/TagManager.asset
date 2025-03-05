@@ -54,8 +54,14 @@ TagManager:
   - name: Background_05
     uniqueID: 2644905947
     locked: 0
+  - name: BackgroundOfBuilding
+    uniqueID: 2792906821
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Black outside
+    uniqueID: 1443517477
     locked: 0
   - name: Foreground
     uniqueID: 527994367
