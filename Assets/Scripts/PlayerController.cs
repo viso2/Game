@@ -24,6 +24,8 @@ public class PlayerController : MonoBehaviour
     public float attackSpeed;
     private float attackCooldownTimer = 0f;
     private bool isAttacking;
+    public float attackRange = 1.5f;
+    public float attackDamage = 10f;
     private float lastDashTime;
     private float doubleTapTime = 0.2f;
     private KeyCode lastKeyPressed;
@@ -34,7 +36,7 @@ public class PlayerController : MonoBehaviour
 
     //Animation
     private Animator animator;
-    private enum PlayerState {Attack, Block, Die, Idle, Run, Walk}
+    private enum PlayerState { Attack, Block, Die, Idle, Run, Walk }
     private PlayerState currentState = PlayerState.Idle;
 
     private bool facingRight = true;
@@ -61,16 +63,17 @@ public class PlayerController : MonoBehaviour
         if (!isDashing)
         {
             rb.linearVelocity = new Vector2(move.x * speed, rb.linearVelocityY);
-            if (rb.linearVelocityX == 0 && !isAttacking) ChangeState(PlayerState.Idle);  else if(!isAttacking) ChangeState(PlayerState.Walk); 
+            if (rb.linearVelocityX == 0 && !isAttacking) ChangeState(PlayerState.Idle); else if (!isAttacking) ChangeState(PlayerState.Walk);
         }
-        
+
 
 
         if (JumpAction.WasPressedThisFrame() && jumpCount < maxJumps)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocityX, jumpForce);
             jumpCount++;
-        }else if (isGrounded && !IsTouchingWall())
+        }
+        else if (isGrounded && !IsTouchingWall())
         {
             jumpCount = 0;
             dashedSinceGrounded = false;
@@ -85,18 +88,18 @@ public class PlayerController : MonoBehaviour
         {
             dashCooldownTimer -= Time.deltaTime;
         }
-       
+
         isGrounded = IsGrounded();
-       if (attackCooldownTimer > 0)
+        if (attackCooldownTimer > 0)
         {
             attackCooldownTimer -= Time.deltaTime;
         }
-        
+
     }
 
     void FixedUpdate()
     {
-        if (rb.linearVelocityX > 0 && !facingRight) Flip(); else if(rb.linearVelocityX < 0 && facingRight) Flip();
+        if (rb.linearVelocityX > 0 && !facingRight) Flip(); else if (rb.linearVelocityX < 0 && facingRight) Flip();
     }
     private bool IsGrounded()
     {
@@ -104,12 +107,27 @@ public class PlayerController : MonoBehaviour
     }
     private void Attack()
     {
-        if (attackCooldownTimer <= 0 && Input.GetKeyDown(KeyCode.X)){
-        isAttacking = true;
-        ChangeState(PlayerState.Attack);
-        StartCoroutine(StopAttackAfterDelay(0.5f));
+        if (attackCooldownTimer <= 0 && Input.GetKeyDown(KeyCode.X))
+        {
+            isAttacking = true;
+            ChangeState(PlayerState.Attack);
+            StartCoroutine(StopAttackAfterDelay(0.5f));
+            PeformAttack();
         }
     }
+
+    private void PeformAttack()
+    {
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, attackRange, LayerMask.GetMask("Enemy"));
+        foreach (Collider2D enemy in hitEnemies)
+        {
+            if (enemy.TryGetComponent<EnemyBase>(out EnemyBase enemyComponent))
+            {
+                enemyComponent.TakeDamage(attackDamage);
+            }
+        }
+    }
+
     private System.Collections.IEnumerator StopAttackAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -121,7 +139,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleDashInput()
     {
-        if (dashCooldownTimer <= 0 && (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))&& !dashedSinceGrounded)
+        if (dashCooldownTimer <= 0 && (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D)) && !dashedSinceGrounded)
         {
             KeyCode currentKey = Input.GetKeyDown(KeyCode.A) ? KeyCode.A : KeyCode.D;
 
@@ -161,13 +179,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private bool IsTouchingWall() 
+    private bool IsTouchingWall()
     {
-        return Physics2D.Raycast(transform.position, Vector2.right, 0.7f, LayerMask.GetMask("Ground")) || 
+        return Physics2D.Raycast(transform.position, Vector2.right, 0.7f, LayerMask.GetMask("Ground")) ||
             Physics2D.Raycast(transform.position, Vector2.left, 0.7f, LayerMask.GetMask("Ground"));
     }
 
-    private void ChangeState(PlayerState newState) {
+    private void ChangeState(PlayerState newState)
+    {
         if (currentState != newState)
         {
             currentState = newState;
@@ -195,11 +214,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void Flip ()
+    private void Flip()
     {
         facingRight = !facingRight;
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
-    } 
+    }
 }

@@ -32,4 +32,16 @@ public abstract class EnemyBase : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
             Debug.Log("Hit");
     }
+
+    internal void TakeDamage(float attackDamage)
+    {
+       health -= attackDamage;
+       if (health <= 0) Die();
+       Debug.Log(health); 
+    }
+
+    private void Die()
+    {
+        Destroy(gameObject);
+    }
 }
