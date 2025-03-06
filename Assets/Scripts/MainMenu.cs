@@ -1,17 +1,29 @@
-using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine;  
 public class MainMenu : MonoBehaviour
+
 {
-
-    public void PlayGame()
+    public Camera mainCamera;
+    public Camera menuCamera;
+    void Start()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        mainCamera.enabled = false;
+        menuCamera.enabled = true;
     }
-
-    public void QuitGame()
+   
+    void Update()
+    {
+        Debug.Log("MenuCam"+menuCamera.enabled);
+        Debug.Log("MainCam"+mainCamera.enabled);
+    }
+    void PlayGame()
+    {
+        menuCamera.enabled = false;
+        mainCamera.enabled = true;
+        
+    }
+    void QuitGame()
     {
         Debug.Log("Quit");
         Application.Quit();
     }
-
 }

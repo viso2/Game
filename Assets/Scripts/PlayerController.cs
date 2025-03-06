@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -82,6 +83,7 @@ public class PlayerController : MonoBehaviour
         HandleDashInput();
         FollowPlayer();
         Attack();
+        GoToMainMenu();
 
         // Update the dash cooldown timer
         if (dashCooldownTimer > 0)
@@ -105,6 +107,14 @@ public class PlayerController : MonoBehaviour
     {
         return boxCollider.IsTouchingLayers(LayerMask.GetMask("Ground"));
     }
+
+    private void GoToMainMenu()
+    { if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene(0);
+        }
+    }
+    
     private void Attack()
     {
         if (attackCooldownTimer <= 0 && Input.GetKeyDown(KeyCode.X))
