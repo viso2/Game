@@ -8,7 +8,7 @@
   - Layers:
     - Default, TransparentFX, Ignore Raycast, Ground, Water, UI, Enemy
 - Active game object:
-  - Name: 03 background A (1)
+  - Name: 01 background
   - Tag: Untagged
-  - Layer: 10
+  - Layer: Default
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->

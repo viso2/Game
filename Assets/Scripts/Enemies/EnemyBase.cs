@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public abstract class EnemyBase : MonoBehaviour
@@ -9,20 +10,31 @@ public abstract class EnemyBase : MonoBehaviour
     [SerializeField] protected float damage = 100f;
     protected Transform player;
     protected Rigidbody2D rb;
-    protected bool facingRight = true;
+    protected bool facingRight = false;
+    protected Animator animator;
+
+    protected enum EnemyState { Attack, Death, Flying, Hurt, Idle }
+    protected EnemyState currentState = EnemyState.Idle;
 
     protected virtual void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
         rb.freezeRotation = true;
+        animator = GetComponent<Animator>();
     }
 
-    protected virtual void Update() {
+    protected virtual void Update()
+    {
         if (player == null) return;
 
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
         if (distanceToPlayer < detectionRange) MoveTowardsPlayer();
+    }
+
+    void FixedUpdate()
+    {
+        if (rb.linearVelocityX > 0 && !facingRight) Flip(); else if (rb.linearVelocityX < 0 && facingRight) Flip();
     }
 
     protected abstract void MoveTowardsPlayer();
@@ -35,13 +47,58 @@ public abstract class EnemyBase : MonoBehaviour
 
     internal void TakeDamage(float attackDamage)
     {
-       health -= attackDamage;
-       if (health <= 0) Die();
-       Debug.Log(health); 
+        health -= attackDamage;
+        ChangeState(EnemyState.Hurt);
+        if (health <= 0)
+        {
+            ChangeState(EnemyState.Death);
+            StartCoroutine(DeathCoroutine());
+        }
+        Debug.Log(health);
+    }
+
+    private IEnumerator DeathCoroutine()
+    {
+        yield return new WaitForSeconds(0.582f);
+        Die();
     }
 
     private void Die()
     {
         Destroy(gameObject);
+    }
+
+    protected void Flip()
+    {
+        facingRight = !facingRight;
+        Vector3 theScale = transform.localScale;
+        theScale.x *= -1;
+        transform.localScale = theScale;
+    }
+
+    protected void ChangeState(EnemyState newState)
+    {
+        if (currentState != newState)
+        {
+            currentState = newState;
+            switch (currentState)
+            {
+                case EnemyState.Attack:
+                    animator.Play("Attack");
+                    break;
+                case EnemyState.Death:
+                    animator.Play("Death");
+                    break;
+                case EnemyState.Idle:
+                    animator.Play("Idle");
+                    break;
+                case EnemyState.Hurt:
+                    animator.Play("Hurt");
+                    break;
+                case EnemyState.Flying:
+                    animator.Play("Flying");
+                    break;
+            }
+        }
     }
 }
