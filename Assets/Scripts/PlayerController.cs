@@ -42,6 +42,8 @@ public class PlayerController : MonoBehaviour
 
     private bool facingRight = true;
     private BoxCollider2D boxCollider;
+    public Camera mainCamera;
+    public Camera menuCamera;
     void Start()
     {
         MoveAction.Enable();
@@ -111,7 +113,8 @@ public class PlayerController : MonoBehaviour
     private void GoToMainMenu()
     { if (Input.GetKeyDown(KeyCode.Escape))
         {
-            SceneManager.LoadScene(0);
+            menuCamera.enabled = true;
+            mainCamera.enabled = false;
         }
     }
     

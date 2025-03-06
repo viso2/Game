@@ -26,6 +26,10 @@ public class Parallax : MonoBehaviour
 
     void Update()
     {
+        if (Camera.main == null)
+        {
+            return;
+        }
         Vector3 cameraMovement = Camera.main.transform.position - lastCameraPosition;
 
         for (int i = 0; i < backgroundLayers.Length; i++)
