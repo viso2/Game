@@ -12,8 +12,6 @@ public class MainMenu : MonoBehaviour
    
     void Update()
     {
-        Debug.Log("MenuCam"+menuCamera.enabled);
-        Debug.Log("MainCam"+mainCamera.enabled);
     }
     void PlayGame()
     {

@@ -59,12 +59,11 @@ public abstract class EnemyBase : MonoBehaviour, IEnemy
             ChangeState(EnemyState.Death);
             StartCoroutine(DeathCoroutine());
         }
-        Debug.Log(health);
     }
 
     private IEnumerator DeathCoroutine()
     {
-        yield return new WaitForSeconds(0.582f);
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length-0.05f);
         Die();
     }
 
@@ -83,6 +82,7 @@ public abstract class EnemyBase : MonoBehaviour, IEnemy
 
     protected void ChangeState(EnemyState newState)
     {
+        Debug.Log($"Changing state to: {newState}");
         if (currentState != newState)
         {
             currentState = newState;
