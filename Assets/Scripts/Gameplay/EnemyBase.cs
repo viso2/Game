@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public abstract class EnemyBase : MonoBehaviour
+public abstract class EnemyBase : MonoBehaviour, IEnemy
 {
     [SerializeField] protected float speed = 2f;
     [SerializeField] protected float detectionRange = 5f;
@@ -45,7 +45,7 @@ public abstract class EnemyBase : MonoBehaviour
             Debug.Log("Hit");
     }
 
-    internal void TakeDamage(float attackDamage)
+    public void TakeDamage(float attackDamage)
     {
         health -= attackDamage;
         ChangeState(EnemyState.Hurt);
