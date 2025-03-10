@@ -4,20 +4,19 @@ public class PlayerHealth : MonoBehaviour
 {
     public int maxHealth = 100;
     public int currentHealth;
-    public HealthBar healthBar;
+    public delegate void OnHealthChanged(int currentHealth, int maxHealth);
+    public event OnHealthChanged HealthChanged;
 
     void Start()
     {
         currentHealth = maxHealth;
-        healthBar.SetMaxHealth(maxHealth);
+        HealthChanged?.Invoke(currentHealth, maxHealth);
     }
-
-  
 
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        healthBar.SetHealth(currentHealth);
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
         if (currentHealth <= 0)
         {
