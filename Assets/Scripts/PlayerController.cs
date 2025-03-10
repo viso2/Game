@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
@@ -44,6 +45,7 @@ public class PlayerController : MonoBehaviour
     private BoxCollider2D boxCollider;
     public Camera mainCamera;
     public Camera menuCamera;
+    private PlayerHealth playerHealth;
     void Start()
     {
         MoveAction.Enable();
@@ -53,6 +55,7 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         originalGravityScale = rb.gravityScale;
         boxCollider = GetComponent<BoxCollider2D>();
+        playerHealth = GetComponent<PlayerHealth>();
     }
 
     void Update()
@@ -190,6 +193,19 @@ public class PlayerController : MonoBehaviour
             Vector3 targetPosition = new Vector3(transform.position.x, transform.position.y, cameraTransform.position.z);
             cameraTransform.position = Vector3.Lerp(cameraTransform.position, targetPosition, cameraSmoothSpeed * Time.deltaTime);
         }
+    }
+    private void Die()
+    {
+        if (playerHealth != null && playerHealth.currentHealth <= 0)
+        {
+        ChangeState(PlayerState.Die);
+        StartCoroutine(DeathCoroutine(1f));
+        }
+    }
+    private IEnumerator DeathCoroutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Application.Quit();
     }
 
     private bool IsTouchingWall()
