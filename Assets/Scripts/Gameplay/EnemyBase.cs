@@ -43,6 +43,11 @@ public abstract class EnemyBase : MonoBehaviour, IEnemy
     {
         if (collision.gameObject.CompareTag("Player"))
             Debug.Log("Hit");
+            PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage((int)damage);
+            }
     }
 
     public void TakeDamage(float attackDamage)
