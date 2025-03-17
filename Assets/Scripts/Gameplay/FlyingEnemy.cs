@@ -1,3 +1,4 @@
+using Gameplay;
 using UnityEngine;
 
 public class FlyingEnemy : EnemyBase
@@ -5,15 +6,11 @@ public class FlyingEnemy : EnemyBase
     protected override void Update()
     {
         base.Update();
-        if (rb.linearVelocityX == 0) {
-            ChangeState(EnemyState.Idle);
-        } else {
-            ChangeState(EnemyState.Flying);
-        }
+        ChangeState(Rb.linearVelocityX == 0 ? EnemyState.Idle : EnemyState.Flying);
     }
     protected override void MoveTowardsPlayer()
     {
-        Vector2 direction = (player.position - transform.position).normalized;
-        rb.linearVelocity = direction * speed;
+        Vector2 direction = (Player.position - transform.position).normalized;
+        Rb.linearVelocity = direction * speed;
     }
 }

@@ -1,24 +1,26 @@
+using Core;
 using UnityEngine;
 using UnityEngine.UI;
- 
-public class HealthBar : MonoBehaviour
-{
-    public Slider healthSlider;
 
-    void Start()
+namespace UI
+{
+    public class HealthBar : MonoBehaviour
     {
-        PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>();
-        if (playerHealth != null)
+        public Slider healthSlider;
+
+        private void Start()
         {
+            PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>();
+            if (playerHealth == null) return;
             playerHealth.HealthChanged += UpdateHealthBar;
             healthSlider.maxValue = playerHealth.maxHealth;
             healthSlider.value = playerHealth.maxHealth;
         }
-    }
 
-    private void UpdateHealthBar(int currentHealth, int maxHealth)
-    {
-        healthSlider.value = currentHealth;
-    }
+        private void UpdateHealthBar(int currentHealth, int maxHealth)
+        {
+            healthSlider.value = currentHealth;
+        }
     
+    }
 }

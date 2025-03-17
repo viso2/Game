@@ -1,27 +1,34 @@
-using UnityEngine;  
-public class MainMenu : MonoBehaviour
+using UnityEngine;
 
+namespace UI
 {
-    public Camera mainCamera;
-    public Camera menuCamera;
-    void Start()
+    public class MainMenu : MonoBehaviour
+
     {
-        mainCamera.enabled = false;
-        menuCamera.enabled = true;
-    }
+        public Camera mainCamera;
+        public Camera menuCamera;
+
+        private void Start()
+        {
+            mainCamera.enabled = false;
+            menuCamera.enabled = true;
+        }
    
-    void Update()
-    {
-    }
-    void PlayGame()
-    {
-        menuCamera.enabled = false;
-        mainCamera.enabled = true;
+        void Update()
+        {
+        }
+
+        private void PlayGame()
+        {
+            menuCamera.enabled = false;
+            mainCamera.enabled = true;
         
-    }
-    void QuitGame()
-    {
-        Debug.Log("Quit");
-        Application.Quit();
+        }
+
+        private void QuitGame()
+        {
+            Debug.Log("Quit");
+            Application.Quit();
+        }
     }
 }

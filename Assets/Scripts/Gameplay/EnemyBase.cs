@@ -1,108 +1,112 @@
 using System;
 using System.Collections;
+using Core;
 using UnityEngine;
 
-public abstract class EnemyBase : MonoBehaviour, IEnemy
+namespace Gameplay
 {
-    [SerializeField] protected float speed = 2f;
-    [SerializeField] protected float detectionRange = 5f;
-    [SerializeField] protected float health = 100f;
-    [SerializeField] protected float damage = 100f;
-    protected Transform player;
-    protected Rigidbody2D rb;
-    protected bool facingRight = false;
-    protected Animator animator;
-
-    protected enum EnemyState { Attack, Death, Flying, Hurt, Idle }
-    protected EnemyState currentState = EnemyState.Idle;
-
-    protected virtual void Start()
+    public abstract class EnemyBase : MonoBehaviour, IEnemy
     {
-        rb = GetComponent<Rigidbody2D>();
-        player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        rb.freezeRotation = true;
-        animator = GetComponent<Animator>();
-    }
+        [SerializeField] protected float speed = 2f;
+        [SerializeField] protected float detectionRange = 5f;
+        [SerializeField] protected float health = 100f;
+        [SerializeField] protected float damage = 100f;
+        protected Transform Player;
+        protected Rigidbody2D Rb;
+        protected bool FacingRight = false;
+        protected Animator Animator;
 
-    protected virtual void Update()
-    {
-        if (player == null) return;
+        protected enum EnemyState { Attack, Death, Flying, Hurt, Idle }
+        protected EnemyState CurrentState = EnemyState.Idle;
 
-        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-        if (distanceToPlayer < detectionRange) MoveTowardsPlayer();
-    }
+        protected virtual void Start()
+        {
+            Rb = GetComponent<Rigidbody2D>();
+            Player = GameObject.FindGameObjectWithTag("Player")?.transform;
+            Rb.freezeRotation = true;
+            Animator = GetComponent<Animator>();
+        }
 
-    void FixedUpdate()
-    {
-        if (rb.linearVelocityX > 0 && !facingRight) Flip(); else if (rb.linearVelocityX < 0 && facingRight) Flip();
-    }
+        protected virtual void Update()
+        {
+            if (Player == null) return;
 
-    protected abstract void MoveTowardsPlayer();
+            float distanceToPlayer = Vector2.Distance(transform.position, Player.position);
+            if (distanceToPlayer < detectionRange) MoveTowardsPlayer();
+        }
 
-    protected virtual void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-            Debug.Log("Hit");
+        void FixedUpdate()
+        {
+            if (Rb.linearVelocityX > 0 && !FacingRight) Flip(); else if (Rb.linearVelocityX < 0 && FacingRight) Flip();
+        }
+
+        protected abstract void MoveTowardsPlayer();
+
+        protected virtual void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (collision.gameObject.CompareTag("Player"))
+                Debug.Log("Hit");
             PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
             if (playerHealth != null)
             {
                 playerHealth.TakeDamage((int)damage);
             }
-    }
-
-    public void TakeDamage(float attackDamage)
-    {
-        health -= attackDamage;
-        ChangeState(EnemyState.Hurt);
-        if (health <= 0)
-        {
-            ChangeState(EnemyState.Death);
-            StartCoroutine(DeathCoroutine());
         }
-    }
 
-    private IEnumerator DeathCoroutine()
-    {
-        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length-0.05f);
-        Die();
-    }
-
-    private void Die()
-    {
-        Destroy(gameObject);
-    }
-
-    protected void Flip()
-    {
-        facingRight = !facingRight;
-        Vector3 theScale = transform.localScale;
-        theScale.x *= -1;
-        transform.localScale = theScale;
-    }
-
-    protected void ChangeState(EnemyState newState)
-    {
-        Debug.Log($"Changing state to: {newState}");
-        if (currentState != newState)
+        public void TakeDamage(float attackDamage)
         {
-            currentState = newState;
-            switch (currentState)
+            health -= attackDamage;
+            ChangeState(EnemyState.Hurt);
+            if (health <= 0)
+            {
+                ChangeState(EnemyState.Death);
+                StartCoroutine(DeathCoroutine());
+            }
+        }
+
+        private IEnumerator DeathCoroutine()
+        {
+            yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length-0.05f);
+            Die();
+        }
+
+        private void Die()
+        {
+            Destroy(gameObject);
+        }
+
+        protected void Flip()
+        {
+            FacingRight = !FacingRight;
+            Vector3 theScale = transform.localScale;
+            theScale.x *= -1;
+            transform.localScale = theScale;
+        }
+
+        protected void ChangeState(EnemyState newState)
+        {
+            Debug.Log($"Changing state to: {newState}");
+            if (CurrentState == newState) return;
+            CurrentState = newState;
+            switch (CurrentState)
             {
                 case EnemyState.Attack:
-                    animator.Play("Attack");
+                    Animator.Play("Attack");
                     break;
                 case EnemyState.Death:
-                    animator.Play("Death");
+                    Animator.Play("Death");
                     break;
                 case EnemyState.Idle:
-                    animator.Play("Idle");
+                    Animator.Play("Idle");
                     break;
                 case EnemyState.Hurt:
-                    animator.Play("Hurt");
+                    Animator.Play("Hurt");
                     break;
                 case EnemyState.Flying:
-                    animator.Play("Flying");
+                    Animator.Play("Flying");
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
     }

@@ -1,47 +1,50 @@
 using UnityEngine;
 
-public class PlatformEnemy : EnemyBase
+namespace Gameplay
 {
-
-    [SerializeField] private float jumpForce = 5f;
-    private BoxCollider2D boxCollider;
-    private bool isOnPlatform;
-
-    protected override void Start()
+    public class PlatformEnemy : EnemyBase
     {
-        base.Start();
-        boxCollider = GetComponent<BoxCollider2D>();
-    }
 
-    protected override void Update()
-    {
-        CheckIfOnPlatform();
-        base.Update();
-    }
+        [SerializeField] private float jumpForce = 5f;
+        private BoxCollider2D _boxCollider;
+        private bool _isOnPlatform;
 
-    private void JumpToPlayer()
-    {
-        if (isOnPlatform)
-            rb.linearVelocity = new Vector2(rb.linearVelocityX, jumpForce);
-    }
+        protected override void Start()
+        {
+            base.Start();
+            _boxCollider = GetComponent<BoxCollider2D>();
+        }
 
-    protected override void MoveTowardsPlayer()
-    {
-        if (!isOnPlatform) return;
+        protected override void Update()
+        {
+            CheckIfOnPlatform();
+            base.Update();
+        }
 
-        float verticalDifference = Mathf.Abs(player.position.y - transform.position.y);
-        if (verticalDifference > 1) JumpToPlayer();
-        else ChasePlayer();
-    }
+        private void JumpToPlayer()
+        {
+            if (_isOnPlatform)
+                Rb.linearVelocity = new Vector2(Rb.linearVelocityX, jumpForce);
+        }
 
-    private void ChasePlayer()
-    {
-        Vector2 direction = new Vector2(player.position.x - transform.position.x, 0).normalized;
-        rb.linearVelocity = new Vector2(direction.x * speed, rb.linearVelocityY);
-    }
+        protected override void MoveTowardsPlayer()
+        {
+            if (!_isOnPlatform) return;
 
-    private void CheckIfOnPlatform()
-    {
-        isOnPlatform = boxCollider.IsTouchingLayers(LayerMask.GetMask("Ground"));
+            float verticalDifference = Mathf.Abs(Player.position.y - transform.position.y);
+            if (verticalDifference > 1) JumpToPlayer();
+            else ChasePlayer();
+        }
+
+        private void ChasePlayer()
+        {
+            Vector2 direction = new Vector2(Player.position.x - transform.position.x, 0).normalized;
+            Rb.linearVelocity = new Vector2(direction.x * speed, Rb.linearVelocityY);
+        }
+
+        private void CheckIfOnPlatform()
+        {
+            _isOnPlatform = _boxCollider.IsTouchingLayers(LayerMask.GetMask("Ground"));
+        }
     }
 }
