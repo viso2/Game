@@ -10,7 +10,7 @@ namespace UI
 
         private void Start()
         {
-            PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>();
+            PlayerHealth playerHealth = FindFirstObjectByType<PlayerHealth>();
             if (playerHealth == null) return;
             playerHealth.HealthChanged += UpdateHealthBar;
             healthSlider.maxValue = playerHealth.maxHealth;

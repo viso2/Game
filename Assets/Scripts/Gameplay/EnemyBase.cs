@@ -13,7 +13,7 @@ namespace Gameplay
         [SerializeField] protected float damage = 100f;
         protected Transform Player;
         protected Rigidbody2D Rb;
-        protected bool FacingRight = false;
+        protected bool FacingRight;
         protected Animator Animator;
 
         protected enum EnemyState { Attack, Death, Flying, Hurt, Idle }
