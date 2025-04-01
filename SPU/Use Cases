@@ -1,0 +1,22 @@
+Use Case 1
+Game is started
+Player clicks play 
+Gameplay starts
+Player goes through the level killing enemies
+Player dies
+Gameplay starts over
+Player goes through the level killing enemies
+Player presses escape and exits game
+Player comes back and opens the game 
+Game starts
+Player presses options
+Player changes audio settings
+Player presses back
+Player presses play
+Game starts from previous save state
+Player progresses through the story
+Player kills final boss
+Player presses escape and clicks exit
+Game ends
+
+Use Case 2
