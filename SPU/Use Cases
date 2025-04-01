@@ -6,6 +6,7 @@ Player goes through the level killing enemies
 Player dies
 Gameplay starts over
 Player goes through the level killing enemies
+Player acquires permanent upgrade
 Player presses escape and exits game
 Player comes back and opens the game 
 Game starts
@@ -20,3 +21,10 @@ Player presses escape and clicks exit
 Game ends
 
 Use Case 2
+Game is started
+Player clicks play
+Gameplay starts
+Player goes through the level killing enemies and progressing the story
+Player kills the final boss
+Player presses escape and clicks exit
+Game ends
