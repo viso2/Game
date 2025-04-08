@@ -28,7 +28,8 @@
 
 # Visual Studio cache directory
 .vs/
-
+.idea/
+.github/copilot-instructions.md
 # Gradle cache directory
 .gradle/
 
@@ -94,3 +95,4 @@ crashlytics-build.properties
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/unity,visualstudiocode
+.DS_Store
