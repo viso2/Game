@@ -30,6 +30,8 @@
 .vs/
 .idea/
 .github/copilot-instructions.md
+.vsconfig
+.vscode/
 # Gradle cache directory
 .gradle/
 
