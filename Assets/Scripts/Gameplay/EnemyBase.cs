@@ -61,15 +61,15 @@ namespace Gameplay
             if (health <= 0)
             {
                 ChangeState(EnemyState.Death);
-                StartCoroutine(DeathCoroutine());
+                //StartCoroutine(DeathCoroutine());
             }
         }
 
-        private IEnumerator DeathCoroutine()
+        /*private IEnumerator DeathCoroutine()
         {
             yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length-0.05f);
             Die();
-        }
+        }*/
 
         private void Die()
         {
@@ -96,6 +96,7 @@ namespace Gameplay
                     break;
                 case EnemyState.Death:
                     Animator.Play("Death");
+                    StartCoroutine(ReturnAfterDeath());
                     break;
                 case EnemyState.Idle:
                     Animator.Play("Idle");
@@ -116,6 +117,12 @@ namespace Gameplay
     // Wait for the duration of the Hurt animation
     yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
     ChangeState(EnemyState.Idle);
+}
+private IEnumerator ReturnAfterDeath()
+{
+    // Wait for the duration of the Hurt animation
+    yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length-0.1f);
+    Die();
 }
     }
 }
