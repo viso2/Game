@@ -85,7 +85,7 @@ namespace Gameplay
 
         protected void ChangeState(EnemyState newState)
         {
-            Debug.Log($"Changing state to: {newState}");
+            //Debug.Log($"Changing state to: {newState}");
             if (CurrentState == newState) return;
             CurrentState = newState;
             switch (CurrentState)

@@ -20,6 +20,7 @@ namespace UI
         private void UpdateHealthBar(int currentHealth, int maxHealth)
         {
             healthSlider.value = currentHealth;
+            Debug.Log($"Current Health: {currentHealth}");
         }
     
     }
