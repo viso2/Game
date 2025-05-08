@@ -66,11 +66,14 @@ TagManager:
   - name: Foreground
     uniqueID: 527994367
     locked: 0
+  - name: Black outside
+    uniqueID: 1443517477
+    locked: 0
   - name: UI
     uniqueID: 1255750601
     locked: 0
-  - name: Black outside
-    uniqueID: 1443517477
+  - name: UI 2
+    uniqueID: 1784192817
     locked: 0
   m_RenderingLayers:
   - Default
