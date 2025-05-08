@@ -102,6 +102,7 @@ namespace Gameplay
                     break;
                 case EnemyState.Hurt:
                     Animator.Play("Hurt");
+                    StartCoroutine(ReturnToIdleAfterHurt());
                     break;
                 case EnemyState.Flying:
                     Animator.Play("Flying");
@@ -110,5 +111,11 @@ namespace Gameplay
                     throw new ArgumentOutOfRangeException();
             }
         }
+        private IEnumerator ReturnToIdleAfterHurt()
+{
+    // Wait for the duration of the Hurt animation
+    yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
+    ChangeState(EnemyState.Idle);
+}
     }
 }
