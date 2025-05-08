@@ -19,6 +19,9 @@ namespace Core
         {
             currentHealth -= damage;
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+            HealthChanged?.Invoke(currentHealth, maxHealth);
+
+            Debug.Log($"Current Health: {currentHealth}");
 
             if (currentHealth <= 0)
             {

@@ -50,6 +50,7 @@ namespace Gameplay
             if (playerHealth != null)
             {
                 playerHealth.TakeDamage((int)damage);
+                Debug.Log("player hit");
             }
         }
 

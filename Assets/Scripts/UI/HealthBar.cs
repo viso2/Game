@@ -17,7 +17,7 @@ namespace UI
             healthSlider.value = playerHealth.maxHealth;
         }
 
-        private void UpdateHealthBar(int currentHealth, int maxHealth)
+        public void UpdateHealthBar(int currentHealth, int maxHealth)
         {
             healthSlider.value = currentHealth;
             Debug.Log($"Current Health: {currentHealth}");
