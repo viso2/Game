@@ -12,7 +12,7 @@ namespace Gameplay
         [SerializeField] protected float health = 100f;
         [SerializeField] protected float damage = 100f;
         [SerializeField] protected float attackRange = 2.5f;
-        [SerializeField] protected float attackCooldown = 0.1f;
+        [SerializeField] protected float attackCooldown = 1f;
         protected Transform Player;
         protected Rigidbody2D Rb;
         protected bool FacingRight;
@@ -34,15 +34,17 @@ namespace Gameplay
 
         protected virtual void Update()
         {
-            timeSinceLastAttack = Time.deltaTime - attackCooldownTimer;
+            timeSinceLastAttack = Time.time - attackCooldownTimer;
             if (Player == null) return;
 
             float distanceToPlayer = Vector2.Distance(transform.position, Player.position);
 
             if (distanceToPlayer < detectionRange) MoveTowardsPlayer();
 
-            if (distanceToPlayer < attackRange && timeSinceLastAttack >= attackCooldown)
+            if (distanceToPlayer < attackRange && timeSinceLastAttack >= attackCooldown && !isAttacking)
             {
+                timeSinceLastAttack = 0;
+                Debug.Log("Attack");
                 ChangeState(EnemyState.Attack);
             }
             
@@ -60,7 +62,7 @@ namespace Gameplay
             if (collision.gameObject.CompareTag("Player"))
                 Debug.Log("Hit");
             ChangeState(EnemyState.Attack);
-            
+            timeSinceLastAttack = 0;
         }
 
         public void TakeDamage(float attackDamage)
@@ -98,16 +100,10 @@ namespace Gameplay
         {
             //Debug.Log($"Changing state to: {newState}");
             if (CurrentState == newState)
-        {
-
-            
+        { 
             return;
         }
-        if (currentCoroutine != null)
-            {
-            StopCoroutine(currentCoroutine);
-            currentCoroutine = null;
-            }
+       
             CurrentState = newState;
 
             switch (CurrentState)
@@ -166,7 +162,7 @@ private IEnumerator PerformAttack()
             Debug.Log("Enemy attacked the player!");
         }
     }
-    attackCooldownTimer = Time.deltaTime;
+    attackCooldownTimer = Time.time;
     isAttacking = false; // Reset attacking state
     // Return to idle state after attacking
     ChangeState(EnemyState.Idle);

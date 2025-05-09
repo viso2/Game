@@ -1209,7 +1209,7 @@ MonoBehaviour:
   health: 25
   damage: 10
   attackRange: 2.5
-  attackCooldown: 1
+  attackCooldown: 2
 --- !u!212 &283256975
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6068,7 +6068,7 @@ MonoBehaviour:
   health: 25
   damage: 10
   attackRange: 2.5
-  attackCooldown: 1
+  attackCooldown: 3
 --- !u!212 &1167154617
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -12919,7 +12919,7 @@ MonoBehaviour:
   health: 25
   damage: 5
   attackRange: 2.5
-  attackCooldown: 1
+  attackCooldown: 2
 --- !u!212 &6260055106047900813
 SpriteRenderer:
   m_ObjectHideFlags: 0
