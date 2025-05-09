@@ -46,12 +46,7 @@ namespace Gameplay
         {
             if (collision.gameObject.CompareTag("Player"))
                 Debug.Log("Hit");
-            PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
-            if (playerHealth != null)
-            {
-                playerHealth.TakeDamage((int)damage);
-                Debug.Log("player hit");
-            }
+            ChangeState(EnemyState.Attack);
         }
 
         public void TakeDamage(float attackDamage)
@@ -93,6 +88,7 @@ namespace Gameplay
             {
                 case EnemyState.Attack:
                     Animator.Play("Attack");
+                    StartCoroutine(PerformAttack());
                     break;
                 case EnemyState.Death:
                     Animator.Play("Death");
@@ -123,6 +119,25 @@ private IEnumerator ReturnAfterDeath()
     // Wait for the duration of the Hurt animation
     yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length-0.1f);
     Die();
+}
+private IEnumerator PerformAttack()
+{
+    // Wait for the attack animation to finish
+    yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
+
+    // Check if the player is still in range and deal damage
+    if (Player != null && Vector2.Distance(transform.position, Player.position) <= 2.5f) // Adjust attack range as needed
+    {
+        PlayerHealth playerHealth = Player.GetComponent<PlayerHealth>();
+        if (playerHealth != null)
+        {
+            playerHealth.TakeDamage((int)damage);
+            Debug.Log("Enemy attacked the player!");
+        }
+    }
+
+    // Return to idle state after attacking
+    ChangeState(EnemyState.Idle);
 }
     }
 }
