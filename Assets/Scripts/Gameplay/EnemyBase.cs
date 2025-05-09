@@ -11,10 +11,15 @@ namespace Gameplay
         [SerializeField] protected float detectionRange = 5f;
         [SerializeField] protected float health = 100f;
         [SerializeField] protected float damage = 100f;
+        [SerializeField] protected float attackRange = 2.5f;
+        [SerializeField] protected float attackCooldown = 0.1f;
         protected Transform Player;
         protected Rigidbody2D Rb;
         protected bool FacingRight;
         protected Animator Animator;
+        protected float attackCooldownTimer;
+        protected float timeSinceLastAttack;
+        protected bool isAttacking = false;
 
         protected enum EnemyState { Attack, Death, Flying, Hurt, Idle }
         protected EnemyState CurrentState = EnemyState.Idle;
@@ -29,10 +34,18 @@ namespace Gameplay
 
         protected virtual void Update()
         {
+            timeSinceLastAttack = Time.deltaTime - attackCooldownTimer;
             if (Player == null) return;
 
             float distanceToPlayer = Vector2.Distance(transform.position, Player.position);
+
             if (distanceToPlayer < detectionRange) MoveTowardsPlayer();
+
+            if (distanceToPlayer < attackRange && timeSinceLastAttack >= attackCooldown)
+            {
+                ChangeState(EnemyState.Attack);
+            }
+            
         }
 
         void FixedUpdate()
@@ -47,6 +60,7 @@ namespace Gameplay
             if (collision.gameObject.CompareTag("Player"))
                 Debug.Log("Hit");
             ChangeState(EnemyState.Attack);
+            
         }
 
         public void TakeDamage(float attackDamage)
@@ -78,17 +92,33 @@ namespace Gameplay
             theScale.x *= -1;
             transform.localScale = theScale;
         }
+        protected Coroutine currentCoroutine;
 
         protected void ChangeState(EnemyState newState)
         {
             //Debug.Log($"Changing state to: {newState}");
-            if (CurrentState == newState) return;
+            if (CurrentState == newState)
+        {
+
+            
+            return;
+        }
+        if (currentCoroutine != null)
+            {
+            StopCoroutine(currentCoroutine);
+            currentCoroutine = null;
+            }
             CurrentState = newState;
+
             switch (CurrentState)
             {
                 case EnemyState.Attack:
+                   if (!isAttacking) // Only start attacking if not already attacking
+                    {
+                    isAttacking = true;
                     Animator.Play("Attack");
                     StartCoroutine(PerformAttack());
+                    }
                     break;
                 case EnemyState.Death:
                     Animator.Play("Death");
@@ -99,6 +129,7 @@ namespace Gameplay
                     break;
                 case EnemyState.Hurt:
                     Animator.Play("Hurt");
+                    isAttacking = false; // Cancel attack when hurt
                     StartCoroutine(ReturnToIdleAfterHurt());
                     break;
                 case EnemyState.Flying:
@@ -126,7 +157,7 @@ private IEnumerator PerformAttack()
     yield return new WaitForSeconds(Animator.GetCurrentAnimatorStateInfo(0).length);
 
     // Check if the player is still in range and deal damage
-    if (Player != null && Vector2.Distance(transform.position, Player.position) <= 2.5f) // Adjust attack range as needed
+    if (Player != null && Vector2.Distance(transform.position, Player.position) <= attackRange) // Adjust attack range as needed
     {
         PlayerHealth playerHealth = Player.GetComponent<PlayerHealth>();
         if (playerHealth != null)
@@ -135,7 +166,8 @@ private IEnumerator PerformAttack()
             Debug.Log("Enemy attacked the player!");
         }
     }
-
+    attackCooldownTimer = Time.deltaTime;
+    isAttacking = false; // Reset attacking state
     // Return to idle state after attacking
     ChangeState(EnemyState.Idle);
 }
