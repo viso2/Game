@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
+using UnityEngine.SceneManagement;
 
 namespace Core
 {
@@ -225,7 +226,8 @@ namespace Core
             _isDead = true;
             Debug.Log("Deathtriggered");
             ChangeState(PlayerState.Die);
-            Application.Quit();
+            SceneManager.LoadScene("MainMenu");
+
 
             StartCoroutine(DeathCoroutine(1f));
         }
