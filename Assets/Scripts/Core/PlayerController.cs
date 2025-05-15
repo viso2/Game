@@ -36,6 +36,7 @@ namespace Core
         private float _lastDashTime;
         private const float DoubleTapTime = 0.2f;
         private KeyCode _lastKeyPressed;
+        private bool _isDead = false;
 
         // Dash cooldown variables
         public float dashCooldown = 1f; // Cooldown time in seconds
@@ -106,6 +107,10 @@ namespace Core
             if (_dashCooldownTimer > 0) _dashCooldownTimer -= Time.deltaTime;
             if (_attackCooldownTimer > 0) _attackCooldownTimer -= Time.deltaTime;
             if (_blockCooldownTimer > 0) _blockCooldownTimer -= Time.deltaTime;
+            if (_playerHealth.currentHealth <= 0)
+            {
+                Die();
+            }
         }
 
         private void FixedUpdate()
@@ -216,8 +221,12 @@ namespace Core
         }
         private void Die()
         {
-            if (_playerHealth == null || _playerHealth.currentHealth > 0) return;
+             if (_isDead) return; // Prevent multiple executions of Die()
+            _isDead = true;
+            Debug.Log("Deathtriggered");
             ChangeState(PlayerState.Die);
+            Application.Quit();
+
             StartCoroutine(DeathCoroutine(1f));
         }
         private static IEnumerator DeathCoroutine(float delay)

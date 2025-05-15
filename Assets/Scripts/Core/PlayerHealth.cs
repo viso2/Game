@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 namespace Core
 {
@@ -33,7 +34,9 @@ namespace Core
         {
             // Handle player death (e.g., reload the scene, show game over screen, etc.)
             Debug.Log("Player died!");
+           
         }
+        
 
     }
 }
